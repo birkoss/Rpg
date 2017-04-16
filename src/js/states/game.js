@@ -30,21 +30,6 @@ RPG.Game.prototype = {
         this.game.input.onUp.add(player_input.onEnd, this);
     },
     update: function() {
-        this.player.body.velocity.x = 0;
-        this.player.body.velocity.y = 0;
-
-        if (this.cursors.up.isDown) {
-            this.player.body.velocity.y -= 50;
-        } else if (this.cursors.down.isDown) {
-            this.player.body.velocity.y += 50;
-        }
-
-        if (this.cursors.left.isDown) {
-            this.player.body.velocity.x -= 50;
-        } else if (this.cursors.right.isDown) {
-            this.player.body.velocity.x += 50;
-        }
-
         this.game.physics.arcade.collide(this.player, this.blockedLayer);
         this.game.physics.arcade.overlap(this.player, this.items, this.collect, null, this);
         this.game.physics.arcade.overlap(this.player, this.doors, this.enterDoor, null, this);
@@ -56,12 +41,12 @@ RPG.Game.prototype = {
         var y = this.backgroundLayer.getTileY(Math.floor(y));
 
         let PF = new PathFinding(this.blockedLayer.layer.data, this.blockedLayer.layer.width, this.blockedLayer.layer.width, this.blockedLayer.layer.height);
-        let path = PF.find({x:this.player.x/this.player.width, y:this.player.y/this.player.height}, {x:x, y:y});
+        let path = PF.find({x:this.player.getGridXY('x'), y:this.player.getGridXY('y')}, {x:x, y:y});
 
         this.indications.removeAll();
 
         if (onlyPreview) {
-            let lastPosition = {x:this.player.x/this.player.width, y:this.player.y/this.player.height};
+            let lastPosition = {x:this.player.getGridXY('x'), y:this.player.getGridXY('y')};
             path.forEach(function(item) {
                 let sprite = this.indications.create(item.x * 16, item.y * 16, 'move');
                 sprite.x += sprite.width/2;
